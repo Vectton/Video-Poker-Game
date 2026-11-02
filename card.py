@@ -47,23 +47,25 @@ class Suit(Enum):
 class Card:
     BACK_UNICODE = '1F0A0'
 
-    def __init__(self ,rank: Rank, suit: Suit, face_up: bool = True):
+    def __init__(self, rank: Rank, suit: Suit, face_up: bool = True):
         self._rank = rank
         self._suit = suit
-        self._face_up = face_up
+        self._is_face_up = face_up
 
     @property
     def rank(self):
         return self._rank
+
     @property
     def suit(self):
         return self._suit
+
     @property
-    def face_up(self):
-        return self._face_up
+    def is_face_up(self):
+        return self._is_face_up
 
     def flip(self):
-        self._face_up = not self._face_up  
+        self._is_face_up = not self._is_face_up  
 
     def __eq__(self, other):
         if not isinstance(other, Card):
@@ -80,7 +82,7 @@ class Card:
         return hash((self._rank, self._suit))
         
     def __str__(self):
-        if self._face_up == False:
+        if self._is_face_up == False:
             return chr(int(Card.BACK_UNICODE, 16))
 
         if self._rank == Rank.ACE:
@@ -95,8 +97,8 @@ class Card:
         return chr(self._suit.unicode_base + offset)
         
     def __repr__(self) -> str:
-        if not self._face_up:
-            return f"Card({chr(int(self.BACK_UNICODE, 16))}"
+        if not self._is_face_up:
+            return f"Card({chr(int(self.BACK_UNICODE, 16))})"
 
         return f"Card({self._rank.label}{self._suit.symbol})"
 

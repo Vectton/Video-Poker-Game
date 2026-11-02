@@ -59,7 +59,9 @@ class VideoPoker:
         self._hand = Hand()
         
         for _ in range(VideoPoker.HAND_SIZE):
-            self._hand.receive(self._stock.draw())
+            card = self._stock.draw()
+            card.flip()
+            self._hand.receive(card)
         
         self._phase = Phase.HOLDING
 
@@ -80,6 +82,7 @@ class VideoPoker:
             if p not in manter:
                 old_card = cartas_mesa[p]
                 new_card = self._stock.draw()
+                new_card.flip()
                 self._hand.replace(old_card, new_card)
 
         avaliar_mão = self.hand_type()
@@ -133,10 +136,39 @@ class VideoPoker:
                         return HandType.JACKS_OR_BETTER
                     return HandType.NOTHING
         return HandType.NOTHING
+
+    def winning_cards_indices(self) -> set:
+        hand_type = self.hand_type()
+        if hand_type is HandType.NOTHING:
+            return set()
+
+        if hand_type in (HandType.ROYAL_FLUSH, HandType.STRAIGHT_FLUSH,
+                         HandType.FULL_HOUSE, HandType.FLUSH, HandType.STRAIGHT):
+            return set(range(len(self.cards)))
+
+        ranks = [card.rank.number for card in self.cards]
+        contagem = {}
+        for rank in ranks:
+            contagem[rank] = contagem.get(rank, 0) + 1
+
+        if hand_type is HandType.FOUR_OF_A_KIND:
+            target = [rank for rank, qtd in contagem.items() if qtd == 4][0]
+            return {idx for idx, rank in enumerate(ranks) if rank == target}
+
+        if hand_type is HandType.THREE_OF_A_KIND:
+            target = [rank for rank, qtd in contagem.items() if qtd == 3][0]
+            return {idx for idx, rank in enumerate(ranks) if rank == target}
+
+        if hand_type is HandType.TWO_PAIR:
+            targets = {rank for rank, qtd in contagem.items() if qtd == 2}
+            return {idx for idx, rank in enumerate(ranks) if rank in targets}
+
+        if hand_type is HandType.JACKS_OR_BETTER:
+            targets = {rank for rank, qtd in contagem.items() if qtd == 2 and rank >= 11}
+            return {idx for idx, rank in enumerate(ranks) if rank in targets}
+
+        return set()
             
-
-
- 
 def testar_tudo():
     from card import Card, Rank, Suit 
     print("=== INICIANDO BATERIA DE TESTES DO VIDEO POKER ===\n")
@@ -160,7 +192,7 @@ def testar_tudo():
         print(f"   - {repr(carta)} / {str(carta)}")
 
     try:
-        jogo.draw([1, 2, 5]) # Posição 5 não existe (0 a 4)
+        jogo.draw([1, 2, 5])
         print("[ERRO] O jogo aceitou índice 5 fora do limite!")
     except InvalidPositionError:
         print("[OK] Bloqueio de posições inválidas (subconjunto <=) funcionando perfeitamente.")

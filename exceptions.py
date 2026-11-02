@@ -1,11 +1,11 @@
-class GamerError(Exception):
+class GameError(Exception):
     pass
-class EmptyStockError(GamerError):
+class EmptyStockError(GameError):
     pass
-class InvalidActionError(GamerError):
+class InvalidActionError(GameError):
     pass
 class InvalidPositionError(InvalidActionError):
     pass
-class CardNotInHandError(GamerError):
+class CardNotInHandError(GameError):
     pass
 

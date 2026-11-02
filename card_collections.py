@@ -4,7 +4,7 @@ from  exceptions import EmptyStockError, CardNotInHandError
 from card import Card, Suit, Rank
 import random
 
-class CardColletion(ABC):
+class CardCollection(ABC):
     def __init__(self, cards: Iterable[Card] = ()):
         self._cards: list[Card] = list(cards)
 
@@ -15,13 +15,13 @@ class CardColletion(ABC):
     def __iter__(self):
         ...
 
-class Stock(CardColletion):
+class Stock(CardCollection):
     def __init__(self):
         super().__init__()
 
         for suit in Suit:
             for rank in Rank:
-                self._cards.append(Card(rank, suit))
+                self._cards.append(Card(rank, suit, face_up=False))
         
     def shuffle(self):
         random.shuffle(self._cards)
@@ -35,7 +35,7 @@ class Stock(CardColletion):
     def __iter__(self):
         return iter(reversed(self._cards))
 
-class Hand(CardColletion):
+class Hand(CardCollection):
     def __init__(self):
         super().__init__()
 

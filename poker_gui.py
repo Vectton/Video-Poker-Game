@@ -11,11 +11,12 @@ from poker import HandType, Phase, VideoPoker
 GREEN_TABLE = '#316b52'
 GREEN_FRAME = "#285844"
 GREEN_BTN = '#2da16a'
-RED_BTN = '#f54237'
+RED_CARD = '#f54237'
+BLUE_BTN = '#2791cb'
 GREY_FILLET = '#2b3638'
 GREY_FRAME = '#172224'
 GREY_BORDER = '#0d181a'
-BLUE_BTN = '#0189f4'
+BLUE_FILLET = '#0189f4'
 BLUE_FRAME = '#021059'
 YELLOW_BTN = '#fa9003'
 YELLOW_FRAME = '#4f4015'
@@ -369,7 +370,7 @@ class PokerApp(tk.Tk):
 
     def _build_result_box(self) -> None:
         self.result_box = RoundedBox(self.right, width=460, height=96, radius=14,
-                                     fill=RED_BTN, outline=GREY_BORDER, thickness=2,
+                                     fill=RED_CARD, outline=GREY_BORDER, thickness=2,
                                      parent_bg=GREEN_TABLE)
         self.result_box.place_forget()
 
@@ -390,7 +391,7 @@ class PokerApp(tk.Tk):
             slot.pack(side='left', padx=7)
 
             hold = RoundedBox(slot, width=65, height=32, radius=9, 
-                              fill=RED_BTN, outline=RED_BTN, parent_bg=GREEN_FRAME)
+                              fill=RED_CARD, outline=RED_CARD, parent_bg=GREEN_FRAME)
             hold.set_text('label', 'HELD', 32, 17, font=FONT_HOLD, colour=WHITE, anchor='center')
             
             box = RoundedBox(slot, width=self.CARD_W, height=self.CARD_H, radius=9,
@@ -425,7 +426,7 @@ class PokerApp(tk.Tk):
         deck.pack(side='left', padx=(26, 0))
         
         deck.set_text('back', chr(int(Card.BACK_UNICODE, 16)), 39, 35,
-                      font=(FAMILY_CARD, 86), colour=RED_BTN, anchor='center')
+                      font=(FAMILY_CARD, 86), colour=RED_CARD, anchor='center')
 
 # ----------- Atualizações de Exibição --------------
     def update_view(self) -> None:
@@ -449,7 +450,7 @@ class PokerApp(tk.Tk):
             if card is None:
                 box.set_fill(WHITE) 
                 box.set_text('back', chr(int(Card.BACK_UNICODE, 16)), 47, 45,
-                             font=(FAMILY_CARD, 102), colour=RED_BTN, anchor='center')
+                             font=(FAMILY_CARD, 102), colour=RED_CARD, anchor='center')
             elif is_result_phase:
                 if self.last_hand is not HandType.NOTHING:
                     box.set_fill(YELLOW_WIN if index in winning_indices else GREY_LIGHT)
@@ -465,7 +466,7 @@ class PokerApp(tk.Tk):
             box.set_text('face', str(card) if card else '',
                          47, 45,
                          font=FONT_CARD,
-                         colour=RED_BTN if card and is_red_card(card) else BLACK,
+                         colour=RED_CARD if card and is_red_card(card) else BLACK,
                          anchor='center')
             
             if held:
@@ -478,14 +479,14 @@ class PokerApp(tk.Tk):
     def _render_result_box(self) -> None:
         if self.poker.phase is Phase.READY and self.last_hand is not None:
             if self.last_hand is HandType.NOTHING:
-                self.result_box.set_fill(RED_BTN)
+                self.result_box.set_fill(RED_CARD)
                 self.result_box.set_text('title', 'NENHUMA COMBINAÇÃO', 230, 34,
                                          font=FONT_SCORE, colour=WHITE, anchor='center')
                 self.result_box.set_text('subtitle', 'TENTE NOVAMENTE', 230, 68,
                                          font=FONT_HEADER, colour=WHITE, anchor='center')
             else:
                 name = HAND_NAMES.get(self.last_hand, '')
-                self.result_box.set_fill(BLUE_BTN)
+                self.result_box.set_fill(BLUE_FILLET)
                 self.result_box.set_text('title', name, 230, 34,
                                          font=FONT_SCORE, colour=WHITE, anchor='center')
                 self.result_box.set_text('subtitle', f'+{self.poker.current_points} PONTOS', 230, 68,
@@ -507,11 +508,11 @@ class PokerApp(tk.Tk):
 
     def _render_score(self) -> None:
         self.score_box.set_text('total', str(self.poker.points), 226, 64,
-                                font=FONT_SCORE, colour=RED_BTN, anchor='w')
+                                font=FONT_SCORE, colour=RED_CARD, anchor='w')
 
     def _render_action(self) -> None:
         ready = self.poker.phase is Phase.READY
-        self.action_btn.draw_rounded(148, 10, 326, 78, 10, (GREEN_BTN if ready else RED_BTN), WHITE, 2)
+        self.action_btn.draw_rounded(148, 10, 326, 78, 10, (GREEN_BTN if ready else BLUE_BTN), WHITE, 2)
         self.action_btn.set_text('label', 'DEAL' if ready else 'DRAW', 235, 43,
                                  font=FONT_BUTTON, colour=WHITE, anchor='center')
 

@@ -65,7 +65,7 @@ def teste():
 
     for a in range(5):
         print(f"{baralho._cards[a]}", end=" ")
-    print(f"\nCartas total: {len(baralho)}") #52
+    print(f"\nCartas total: {len(baralho)}")
 
 
     baralho.shuffle()
